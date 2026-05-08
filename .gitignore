@@ -51,7 +51,7 @@ Thumbs.db
 *.sqlite
 publish/
 *.publishsettings
-
+.claude
 ## --- 编译后的动态库/静态库 (可选) ---
 # 如果你有手动放入的第三方 dll，可以注释掉下面这两行
 # *.dll

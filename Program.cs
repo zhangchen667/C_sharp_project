@@ -19,7 +19,6 @@ builder.Services.AddIdentity<User, IdentityRole>(options =>
         options.Password.RequiredLength = 6;
     })
     .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultUI()
     .AddDefaultTokenProviders();
 
 builder.Services.AddRazorPages();

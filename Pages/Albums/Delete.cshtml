@@ -1,0 +1,22 @@
+@page "{id}"
+@model MyPersonalSpace.Pages.Albums.DeleteModel
+
+@{
+    ViewData["Title"] = "删除照片";
+}
+
+<h1 class="mb-4">删除照片</h1>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">确认删除</h5>
+        <p class="card-text">确定要删除这张照片吗？此操作不可撤销。</p>
+        <div class="mb-3">
+            <img src="@Model.Photo.FilePath" alt="@Model.Photo.FileName" class="img-thumbnail" style="max-width: 300px;" />
+        </div>
+        <form method="post">
+            <button type="submit" class="btn btn-danger">确认删除</button>
+            <a asp-page="./Index" class="btn btn-secondary">取消</a>
+        </form>
+    </div>
+</div>

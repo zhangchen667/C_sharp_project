@@ -1,0 +1,26 @@
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-page="/Identity/Account/Manage/Index" title="管理">你好, @User.Identity?.Name!</a>
+        </li>
+        <li class="nav-item">
+            <form class="form-inline" asp-page="/Identity/Account/Logout" asp-route-returnUrl="@Url.Page("/Index")">
+                <button type="submit" class="nav-link btn btn-link text-dark">退出登录</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-page="/Identity/Account/Register">注册</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-page="/Identity/Account/Login">登录</a>
+        </li>
+    }
+</ul>

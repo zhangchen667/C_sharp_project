@@ -1,0 +1,41 @@
+@page
+@model MyPersonalSpace.Pages.Posts.CreateModel
+
+@{
+    ViewData["Title"] = "发布博文";
+}
+
+<h1 class="mb-4">发布新博文</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+            <div class="mb-3">
+                <label asp-for="Post.Title" class="form-label"></label>
+                <input asp-for="Post.Title" class="form-control" required />
+                <span asp-validation-for="Post.Title" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Post.CategoryId" class="form-label">分类</label>
+                <select asp-for="Post.CategoryId" class="form-select" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))"></select>
+                <span asp-validation-for="Post.CategoryId" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Post.Content" class="form-label"></label>
+                <textarea asp-for="Post.Content" class="form-control" rows="10" required></textarea>
+                <span asp-validation-for="Post.Content" class="text-danger"></span>
+            </div>
+            <div class="mb-3 form-check">
+                <input asp-for="Post.IsPublic" class="form-check-input" />
+                <label class="form-check-label" asp-for="Post.IsPublic">
+                    公开显示
+                </label>
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">发布</button>
+                <a asp-page="./Index" class="btn btn-secondary">取消</a>
+            </div>
+        </form>
+    </div>
+</div>

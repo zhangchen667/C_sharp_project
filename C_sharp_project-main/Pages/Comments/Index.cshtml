@@ -1,0 +1,61 @@
+@page
+@model MyPersonalSpace.Pages.Comments.IndexModel
+
+@{
+    ViewData["Title"] = "留言板";
+}
+
+<h1 class="mb-4">留言板</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <h3 class="mb-3">发表留言</h3>
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+            <div class="mb-3">
+                <label asp-for="NewComment.AuthorName" class="form-label">您的昵称</label>
+                <input asp-for="NewComment.AuthorName" class="form-control" required />
+                <span asp-validation-for="NewComment.AuthorName" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="NewComment.Email" class="form-label">邮箱（选填）</label>
+                <input asp-for="NewComment.Email" class="form-control" placeholder="用于接收回复通知" />
+                <span asp-validation-for="NewComment.Email" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="NewComment.Content" class="form-label">留言内容</label>
+                <textarea asp-for="NewComment.Content" class="form-control" rows="4" required></textarea>
+                <span asp-validation-for="NewComment.Content" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">提交留言</button>
+        </form>
+    </div>
+    <div class="col-md-6">
+        <h3 class="mb-3">所有留言</h3>
+        @if (!Model.Comments.Any())
+        {
+            <div class="alert alert-info">暂无留言，快来抢沙发！</div>
+        }
+        else
+        {
+            @foreach (var comment in Model.Comments)
+            {
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h6 class="card-title">
+                            @comment.AuthorName
+                            <small class="text-muted"> - @comment.CreatedAt.ToString("yyyy-MM-dd HH:mm")</small>
+                        </h6>
+                        <p class="card-text">@comment.Content</p>
+                        @if (!string.IsNullOrEmpty(comment.Reply))
+                        {
+                            <div class="alert alert-secondary mt-2">
+                                <strong>站长回复：</strong> @comment.Reply
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>

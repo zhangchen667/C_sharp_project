@@ -1,4 +1,4 @@
-## --- 编译输出 (Build Results) ---
+### --- 编译输出 (Build Results) ---
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
@@ -10,7 +10,7 @@ x86/
 [Ll]og/
 [Ll]ogs/
 
-## --- Visual Studio 临时文件 & 缓存 ---
+### --- Visual Studio 临时文件 & 缓存 ---
 .vs/
 *.user
 *.userosscache

@@ -180,7 +180,7 @@ namespace MyPersonalSpace.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2026, 5, 8, 16, 7, 58, 745, DateTimeKind.Local).AddTicks(945),
+                            CreatedAt = new DateTime(2026, 5, 8, 20, 50, 43, 783, DateTimeKind.Local).AddTicks(4096),
                             Description = "默认上传相册",
                             Name = "默认相册"
                         });
@@ -212,21 +212,21 @@ namespace MyPersonalSpace.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2026, 5, 8, 16, 7, 58, 741, DateTimeKind.Local).AddTicks(8115),
+                            CreatedAt = new DateTime(2026, 5, 8, 20, 50, 43, 779, DateTimeKind.Local).AddTicks(8514),
                             Description = "技术相关文章",
                             Name = "技术"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2026, 5, 8, 16, 7, 58, 744, DateTimeKind.Local).AddTicks(2078),
+                            CreatedAt = new DateTime(2026, 5, 8, 20, 50, 43, 783, DateTimeKind.Local).AddTicks(1078),
                             Description = "日常随笔",
                             Name = "生活"
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2026, 5, 8, 16, 7, 58, 744, DateTimeKind.Local).AddTicks(2104),
+                            CreatedAt = new DateTime(2026, 5, 8, 20, 50, 43, 783, DateTimeKind.Local).AddTicks(1087),
                             Description = "学习笔记",
                             Name = "学习"
                         });

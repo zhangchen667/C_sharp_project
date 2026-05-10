@@ -1,10 +1,10 @@
 <template>
   <div class="admin">
-    <h2 class="page-title">管理后台</h2>
+    <h1 class="page-title">管理后台</h1>
 
-    <el-row :gutter="20" class="stat-row">
-      <el-col :span="6" v-for="stat in stats" :key="stat.title">
-        <el-card shadow="hover">
+    <el-row :gutter="24" class="stat-row">
+      <el-col :lg="6" :md="12" :sm="24" v-for="stat in stats" :key="stat.title">
+        <el-card shadow="hover" class="stat-card">
           <el-statistic :title="stat.title" :value="stat.value" />
         </el-card>
       </el-col>
@@ -12,7 +12,7 @@
 
     <el-card class="comments-card">
       <template #header>
-        <span>留言管理</span>
+        <span class="card-header-title">留言管理</span>
       </template>
       <el-table :data="comments" style="width: 100%">
         <el-table-column prop="authorName" label="昵称" width="120" />
@@ -103,18 +103,28 @@ onMounted(fetchData)
 
 <style scoped>
 .admin {
-  padding: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .page-title {
-  margin: 0 0 20px;
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-2xl);
+  margin: 0 0 var(--spacing-xl);
+  color: var(--text-primary);
 }
 
 .stat-row {
-  margin-bottom: 30px;
+  margin-bottom: var(--spacing-xl);
 }
 
-.comments-card {
-  margin-top: 20px;
+.stat-card {
+  text-align: center;
+}
+
+.card-header-title {
+  font-family: var(--font-family-serif);
+  font-weight: 600;
+  font-size: var(--font-size-lg);
 }
 </style>

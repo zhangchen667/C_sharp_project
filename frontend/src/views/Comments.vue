@@ -1,6 +1,6 @@
 <template>
   <div class="comments">
-    <h2 class="page-title">留言板</h2>
+    <h1 class="page-title">留言板</h1>
 
     <el-card class="comment-form">
       <el-form :model="form" label-width="80px">
@@ -20,7 +20,7 @@
     </el-card>
 
     <div class="comment-list">
-      <h3>全部留言</h3>
+      <h2>全部留言</h2>
       <el-empty v-if="!comments.length" description="暂无留言" />
       <el-card v-for="comment in comments" :key="comment.id" shadow="hover" class="comment-item">
         <div class="comment-header">
@@ -75,51 +75,61 @@ onMounted(fetchComments)
 
 <style scoped>
 .comments {
-  padding: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .page-title {
-  margin: 0 0 20px;
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-2xl);
+  margin: 0 0 var(--spacing-xl);
+  color: var(--text-primary);
 }
 
 .comment-form {
-  margin-bottom: 30px;
+  margin-bottom: var(--spacing-2xl);
 }
 
-.comment-list h3 {
-  margin: 0 0 20px;
+.comment-list h2 {
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-xl);
+  margin: 0 0 var(--spacing-lg);
+  color: var(--text-primary);
 }
 
 .comment-item {
-  margin-bottom: 15px;
+  margin-bottom: var(--spacing-md);
 }
 
 .comment-header {
-  margin-bottom: 10px;
+  margin-bottom: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
 }
 
 .comment-header .author {
-  font-weight: bold;
-  color: #409eff;
+  font-weight: 600;
+  color: var(--brand-primary);
 }
 
 .comment-header .date {
-  margin-left: 15px;
-  color: #999;
-  font-size: 12px;
+  color: var(--text-muted);
+  font-size: var(--font-size-xs);
 }
 
 .comment-content {
-  color: #333;
-  line-height: 1.6;
+  color: var(--text-primary);
+  line-height: var(--line-height-reading);
 }
 
 .comment-reply {
-  margin-top: 15px;
-  padding: 10px 15px;
-  background: #f0f9eb;
-  border-left: 4px solid #67c23a;
-  color: #67c23a;
-  border-radius: 4px;
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background: var(--bg-secondary);
+  border-left: 4px solid var(--brand-secondary);
+  color: var(--text-secondary);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  font-size: var(--font-size-sm);
 }
 </style>

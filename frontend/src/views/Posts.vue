@@ -1,16 +1,20 @@
 <template>
   <div class="posts">
+    <h1 class="page-title">博客文章</h1>
+
     <el-card class="filter-card">
-      <el-input v-model="keyword" placeholder="搜索文章" style="width: 300px" class="mr-2" />
-      <el-select v-model="categoryId" placeholder="选择分类" clearable style="width: 150px">
-        <el-option v-for="cat in categories" :key="cat.id" :label="cat.name" :value="cat.id" />
-      </el-select>
-      <el-button type="primary" @click="fetchPosts">搜索</el-button>
-      <el-button type="success" @click="showCreate = true" v-if="userStore.isAdmin">发布文章</el-button>
+      <div class="filter-row">
+        <el-input v-model="keyword" placeholder="搜索文章" class="filter-input" />
+        <el-select v-model="categoryId" placeholder="选择分类" clearable class="filter-select">
+          <el-option v-for="cat in categories" :key="cat.id" :label="cat.name" :value="cat.id" />
+        </el-select>
+        <el-button type="primary" @click="fetchPosts">搜索</el-button>
+        <el-button type="primary" @click="showCreate = true" v-if="userStore.isAdmin">发布文章</el-button>
+      </div>
     </el-card>
 
-    <el-row :gutter="20">
-      <el-col :span="12" v-for="post in posts" :key="post.id">
+    <el-row :gutter="24">
+      <el-col :lg="12" :md="12" :sm="24" v-for="post in posts" :key="post.id">
         <el-card shadow="hover" class="post-card">
           <h3 class="post-title" @click="$router.push(`/posts/${post.id}`)">{{ post.title }}</h3>
           <div class="post-meta">
@@ -19,7 +23,7 @@
             <span class="date">{{ formatDate(post.createdAt) }}</span>
           </div>
           <div class="post-excerpt">{{ post.content.substring(0, 100) }}...</div>
-          <el-button type="primary" link @click="$router.push(`/posts/${post.id}`)">阅读全文</el-button>
+          <el-button type="primary" link @click="$router.push(`/posts/${post.id}`)">阅读全文 →</el-button>
         </el-card>
       </el-col>
     </el-row>
@@ -99,45 +103,88 @@ onMounted(() => {
 
 <style scoped>
 .posts {
-  padding: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.page-title {
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--spacing-lg);
+  color: var(--text-primary);
 }
 
 .filter-card {
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-xl);
 }
 
-.mr-2 {
-  margin-right: 10px;
+.filter-row {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.filter-input {
+  flex: 0 0 300px;
+}
+
+.filter-select {
+  flex: 0 0 150px;
 }
 
 .post-card {
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-lg);
+  height: calc(100% - var(--spacing-lg));
+  display: flex;
+  flex-direction: column;
 }
 
 .post-title {
-  font-size: 18px;
-  margin: 0 0 10px;
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-lg);
+  margin: 0 0 var(--spacing-md);
   cursor: pointer;
-  color: #303133;
+  color: var(--text-primary);
+  transition: color var(--transition-fast);
+  line-height: 1.4;
 }
 
 .post-title:hover {
-  color: #409eff;
+  color: var(--brand-primary);
 }
 
 .post-meta {
-  margin-bottom: 10px;
-  color: #999;
-  font-size: 12px;
+  margin-bottom: var(--spacing-md);
+  font-size: var(--font-size-xs);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
 }
 
 .post-meta .author,
 .post-meta .date {
-  margin-left: 10px;
+  color: var(--text-muted);
 }
 
 .post-excerpt {
-  color: #666;
-  line-height: 1.6;
+  color: var(--text-secondary);
+  line-height: var(--line-height-reading);
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-md);
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .filter-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-input,
+  .filter-select {
+    flex: none;
+  }
 }
 </style>

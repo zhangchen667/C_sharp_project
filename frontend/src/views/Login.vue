@@ -1,9 +1,9 @@
 <template>
-  <div class="login">
-    <el-card class="login-card">
+  <div class="auth-page">
+    <el-card class="auth-card">
       <template #header>
         <div class="card-header">
-          <span>用户登录</span>
+          <h2>用户登录</h2>
         </div>
       </template>
       <el-form ref="formRef" :model="form" label-width="80px">
@@ -16,7 +16,7 @@
           <el-input v-model="form.password" type="password" placeholder="请输入密码" show-password />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleLogin" style="width: 100%">登录</el-button>
+          <el-button type="primary" @click="handleLogin" class="submit-btn">登录</el-button>
         </el-form-item>
         <div class="tips">
           还没有账号？<el-link type="primary" @click="$router.push('/register')">立即注册</el-link>
@@ -59,24 +59,36 @@ const handleLogin = async () => {
 </script>
 
 <style scoped>
-.login {
+.auth-page {
   display: flex;
   justify-content: center;
-  padding: 50px 0;
+  align-items: flex-start;
+  padding: var(--spacing-2xl) var(--spacing-lg);
 }
 
-.login-card {
-  width: 450px;
+.auth-card {
+  width: 100%;
+  max-width: 450px;
 }
 
 .card-header {
   text-align: center;
-  font-size: 20px;
-  font-weight: bold;
+}
+
+.card-header h2 {
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-xl);
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.submit-btn {
+  width: 100%;
 }
 
 .tips {
   text-align: center;
-  color: #666;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
 }
 </style>

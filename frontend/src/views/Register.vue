@@ -1,9 +1,9 @@
 <template>
-  <div class="register">
-    <el-card class="register-card">
+  <div class="auth-page">
+    <el-card class="auth-card">
       <template #header>
         <div class="card-header">
-          <span>用户注册</span>
+          <h2>用户注册</h2>
         </div>
       </template>
       <el-form ref="formRef" :model="form" label-width="80px">
@@ -18,14 +18,17 @@
         <el-form-item label="密码" prop="password"
           :rules="[{ required: true, message: '请输入密码' }, { min: 6, message: '密码至少6位' }]">
           <el-input v-model="form.password" type="password" placeholder="请输入密码" show-password />
-          <div class="password-hint">密码要求：至少6位，包含大写字母、小写字母、数字和特殊字符</div>
+          <div class="password-hint">
+            <el-icon><InfoFilled /></el-icon>
+            密码要求：至少6位，建议包含大小写字母、数字和特殊字符
+          </div>
         </el-form-item>
         <el-form-item label="确认密码" prop="confirmPassword"
           :rules="[{ required: true, message: '请确认密码' }]">
           <el-input v-model="form.confirmPassword" type="password" placeholder="请再次输入密码" show-password />
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="handleRegister" style="width: 100%">注册</el-button>
+          <el-button type="primary" @click="handleRegister" class="submit-btn">注册</el-button>
         </el-form-item>
         <div class="tips">
           已有账号？<el-link type="primary" @click="$router.push('/login')">立即登录</el-link>
@@ -39,6 +42,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { InfoFilled } from '@element-plus/icons-vue'
 import { authApi } from '../api'
 import { useUserStore } from '../stores/user'
 
@@ -80,30 +84,46 @@ const handleRegister = async () => {
 </script>
 
 <style scoped>
-.register {
+.auth-page {
   display: flex;
   justify-content: center;
-  padding: 50px 0;
+  align-items: flex-start;
+  padding: var(--spacing-2xl) var(--spacing-lg);
 }
 
-.register-card {
-  width: 450px;
+.auth-card {
+  width: 100%;
+  max-width: 450px;
 }
 
 .card-header {
   text-align: center;
-  font-size: 20px;
-  font-weight: bold;
+}
+
+.card-header h2 {
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-xl);
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.submit-btn {
+  width: 100%;
 }
 
 .tips {
   text-align: center;
-  color: #666;
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
 }
 
 .password-hint {
-  font-size: 12px;
-  color: #999;
-  margin-top: 4px;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  margin-top: var(--spacing-xs);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1.5;
 }
 </style>

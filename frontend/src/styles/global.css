@@ -1,0 +1,360 @@
+/* 引入 Token 系统 */
+@import './tokens.css';
+
+/* ========================================
+   全局样式重置与基础设定
+   ======================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* 全局过渡 - 主题切换平滑 */
+  transition: background-color var(--transition-base),
+              color var(--transition-base),
+              box-shadow var(--transition-base),
+              border-color var(--transition-base);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-reading);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 标题使用衬线字体，增加纸质书质感 */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-serif);
+  font-weight: 600;
+  line-height: var(--line-height-tight);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-md);
+}
+
+h1 { font-size: var(--font-size-3xl); }
+h2 { font-size: var(--font-size-2xl); }
+h3 { font-size: var(--font-size-xl); }
+h4 { font-size: var(--font-size-lg); }
+
+/* 段落间距 - 模拟纸质书密度 */
+p {
+  margin-bottom: var(--spacing-md);
+}
+
+p + p {
+  margin-top: var(--spacing-md);
+}
+
+/* 链接样式 - 下划线动效 */
+a {
+  color: var(--brand-primary-deep);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+a:hover {
+  border-bottom-color: var(--brand-primary);
+}
+
+/* 焦点样式 - 可访问性 */
+:focus-visible {
+  outline: 2px solid var(--brand-primary);
+  outline-offset: 2px;
+}
+
+/* 选中文字背景 */
+::selection {
+  background-color: var(--brand-secondary);
+  color: white;
+}
+
+/* ========================================
+   Element Plus 组件全局覆盖
+   ======================================== */
+
+/* 卡片 - 治愈系圆角与阴影 */
+.el-card {
+  border-radius: var(--radius-lg) !important;
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border-light) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transition: all var(--transition-base) !important;
+}
+
+.el-card:hover {
+  box-shadow: var(--shadow-hover) !important;
+  transform: translateY(-2px);
+}
+
+.el-card__header {
+  border-bottom: 1px solid var(--border-light) !important;
+  padding: var(--spacing-md) var(--spacing-lg) !important;
+}
+
+.el-card__body {
+  padding: var(--spacing-lg) !important;
+}
+
+/* 主按钮 - 陶土色 */
+.el-button--primary {
+  background-color: var(--brand-primary) !important;
+  border-color: var(--brand-primary) !important;
+  border-radius: var(--radius-md) !important;
+  font-weight: 500;
+}
+
+.el-button--primary:hover {
+  background-color: var(--brand-primary-deep) !important;
+  border-color: var(--brand-primary-deep) !important;
+}
+
+/* 默认按钮 */
+.el-button--default {
+  border-radius: var(--radius-md) !important;
+  background-color: var(--bg-card) !important;
+  border-color: var(--border-medium) !important;
+  color: var(--text-primary) !important;
+}
+
+.el-button--default:hover {
+  border-color: var(--brand-primary) !important;
+  color: var(--brand-primary) !important;
+}
+
+/* 文字按钮 */
+.el-button--text {
+  color: var(--brand-primary) !important;
+}
+
+.el-button--text:hover {
+  color: var(--brand-primary-deep) !important;
+  background-color: var(--bg-secondary) !important;
+}
+
+/* 输入框 */
+.el-input__wrapper {
+  border-radius: var(--radius-md) !important;
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border-light) !important;
+  box-shadow: none !important;
+  padding: 6px 15px !important;
+}
+
+.el-input__wrapper:hover {
+  border-color: var(--brand-secondary) !important;
+}
+
+.el-input__wrapper.is-focus {
+  border-color: var(--brand-primary) !important;
+}
+
+.el-input__inner {
+  color: var(--text-primary) !important;
+}
+
+.el-input__inner::placeholder {
+  color: var(--text-muted) !important;
+}
+
+/* 文本域 */
+.el-textarea__inner {
+  border-radius: var(--radius-md) !important;
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border-light) !important;
+  color: var(--text-primary) !important;
+}
+
+.el-textarea__inner:focus {
+  border-color: var(--brand-primary) !important;
+}
+
+/* 导航菜单 */
+.el-menu {
+  border-bottom: none !important;
+  background-color: transparent !important;
+}
+
+.el-menu-item {
+  color: var(--text-secondary) !important;
+  font-weight: 400;
+  transition: all var(--transition-fast) !important;
+}
+
+.el-menu-item:hover {
+  color: var(--brand-primary) !important;
+  background-color: var(--bg-secondary) !important;
+}
+
+.el-menu-item.is-active {
+  color: var(--brand-primary) !important;
+  font-weight: 500;
+}
+
+.el-menu-item.is-active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 3px;
+  background-color: var(--brand-primary);
+  border-radius: 3px 3px 0 0;
+}
+
+/* 标签 Tag */
+.el-tag {
+  border-radius: var(--radius-full) !important;
+  border: none !important;
+  padding: 4px 12px !important;
+  font-weight: 400;
+}
+
+.el-tag--success {
+  background-color: rgba(103, 194, 58, 0.1) !important;
+  color: #529B2E !important;
+}
+
+.el-tag--warning {
+  background-color: rgba(230, 162, 60, 0.1) !important;
+  color: #B8822E !important;
+}
+
+.el-tag--info {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-secondary) !important;
+}
+
+/* 弹窗 Dialog */
+.el-dialog {
+  border-radius: var(--radius-lg) !important;
+  background-color: var(--bg-card) !important;
+}
+
+.el-dialog__header {
+  border-bottom: 1px solid var(--border-light);
+  padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md);
+}
+
+.el-dialog__body {
+  padding: var(--spacing-lg) !important;
+  color: var(--text-primary) !important;
+}
+
+.el-dialog__footer {
+  border-top: 1px solid var(--border-light);
+  padding: var(--spacing-md) var(--spacing-lg) var(--spacing-lg);
+}
+
+/* 消息提示 */
+.el-message {
+  border-radius: var(--radius-md) !important;
+}
+
+/* ========================================
+   通用工具类
+   ======================================== */
+
+/* 纸张纹理 - 全局微妙噪点 */
+.paper-texture {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 200px 200px;
+}
+
+/* 装饰性 Blob - 暖色圆形光晕 */
+.decoration-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.15;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.decoration-blob-1 {
+  width: 300px;
+  height: 300px;
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+  top: -100px;
+  right: -100px;
+}
+
+.decoration-blob-2 {
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(135deg, var(--brand-secondary), #F0C1A3);
+  bottom: 50px;
+  left: -50px;
+}
+
+/* 作者笔记装饰块 */
+.author-note {
+  background-color: var(--bg-secondary);
+  border-left: 3px solid var(--brand-secondary);
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin: var(--spacing-lg) 0;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* 图片圆角卡片 */
+.image-card {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+}
+
+.image-card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-3px);
+}
+
+.image-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+
+.image-card:hover img {
+  transform: scale(1.02);
+}
+
+/* 时间戳样式 */
+.timestamp {
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+/* ========================================
+   深色模式特殊优化
+   ======================================== */
+
+[data-theme="dark"] .image-card img {
+  filter: brightness(0.95);
+}
+
+[data-theme="dark"] .paper-texture {
+  opacity: 0.02;
+}

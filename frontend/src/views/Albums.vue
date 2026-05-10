@@ -1,21 +1,24 @@
 <template>
   <div class="albums">
     <div class="header-bar">
-      <h2>相册</h2>
+      <h1 class="page-title">相册</h1>
       <el-button type="primary" @click="showUpload = true" v-if="userStore.isAdmin">上传照片</el-button>
     </div>
 
     <el-empty v-if="!photos.length" description="暂无照片" />
 
-    <el-row :gutter="20" v-else>
-      <el-col :span="6" v-for="photo in photos" :key="photo.id">
+    <el-row :gutter="24" v-else>
+      <el-col :lg="6" :md="8" :sm="12" :xs="24" v-for="photo in photos" :key="photo.id">
         <el-card shadow="hover" class="photo-card">
-          <el-image
-            :src="`http://localhost:5000${photo.filePath}`"
-            fit="cover"
-            style="width: 100%; height: 200px"
-            :preview-src-list="[`http://localhost:5000${photo.filePath}`]"
-          />
+          <div class="image-wrapper">
+            <el-image
+              :src="`http://localhost:5000${photo.filePath}`"
+              fit="cover"
+              style="width: 100%; height: 200px"
+              :preview-src-list="[`http://localhost:5000${photo.filePath}`]"
+              :preview-teleported="true"
+            />
+          </div>
           <div class="photo-info">
             <p class="photo-desc">{{ photo.description || photo.fileName }}</p>
             <div class="photo-actions">
@@ -38,7 +41,7 @@
       >
         <el-button type="primary">选择图片</el-button>
       </el-upload>
-      <el-input v-model="uploadDesc" placeholder="描述（选填）" class="mt-2" />
+      <el-input v-model="uploadDesc" placeholder="描述（选填）" class="desc-input" />
       <template #footer>
         <el-button @click="showUpload = false">取消</el-button>
         <el-button type="primary" @click="uploadPhoto" :loading="uploading">上传</el-button>
@@ -111,32 +114,43 @@ onMounted(fetchPhotos)
 
 <style scoped>
 .albums {
-  padding: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .header-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-xl);
 }
 
-.header-bar h2 {
+.page-title {
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-2xl);
   margin: 0;
+  color: var(--text-primary);
 }
 
 .photo-card {
-  margin-bottom: 20px;
+  margin-bottom: var(--spacing-lg);
+}
+
+.image-wrapper {
+  margin: calc(var(--spacing-lg) * -1) calc(var(--spacing-lg) * -1) var(--spacing-md);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  overflow: hidden;
 }
 
 .photo-info {
-  margin-top: 10px;
+  margin-top: var(--spacing-sm);
 }
 
 .photo-desc {
-  margin: 0 0 8px;
-  font-size: 14px;
-  color: #333;
+  margin: 0 0 var(--spacing-sm);
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  line-height: 1.4;
 }
 
 .photo-actions {
@@ -146,11 +160,11 @@ onMounted(fetchPhotos)
 }
 
 .date {
-  font-size: 12px;
-  color: #999;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
 }
 
-.mt-2 {
-  margin-top: 10px;
+.desc-input {
+  margin-top: var(--spacing-md);
 }
 </style>

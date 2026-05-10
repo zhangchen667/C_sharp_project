@@ -108,20 +108,24 @@ npm run dev
 
 ## API 接口
 
-| 模块 | 接口 | 方法 | 说明 |
-|------|------|------|------|
-| 认证 | /api/auth/login | POST | 登录 |
-| 认证 | /api/auth/register | POST | 注册 |
-| 博文 | /api/posts | GET | 获取文章列表 |
-| 博文 | /api/posts/{id} | GET | 获取文章详情 |
-| 博文 | /api/posts | POST | 发布文章 |
-| 相册 | /api/albums/photos | GET | 获取照片列表 |
-| 相册 | /api/albums/upload | POST | 上传照片 |
-| 留言 | /api/comments | GET | 获取留言列表 |
-| 留言 | /api/comments | POST | 提交留言 |
-| 留言 | /api/comments/all | GET | 获取全部留言（管理员） |
-| 留言 | /api/comments/{id}/reply | PUT | 回复留言 |
-| 留言 | /api/comments/{id} | DELETE | 删除留言 |
+> 带 🔒 的接口需要在请求头 `Authorization: Bearer <token>` 中携带 JWT Token。
+
+| 模块 | 接口 | 方法 | 认证 | 说明 |
+|------|------|------|------|------|
+| 认证 | /api/auth/login | POST | - | 登录，返回 JWT Token |
+| 认证 | /api/auth/register | POST | - | 注册，返回 JWT Token |
+| 博文 | /api/posts | GET | - | 获取文章列表（支持 keyword、categoryId 筛选） |
+| 博文 | /api/posts/{id} | GET | - | 获取文章详情 |
+| 博文 | /api/posts | POST | 🔒 Admin | 发布文章 |
+| 博文 | /api/posts/categories | GET | - | 获取分类列表 |
+| 相册 | /api/albums/photos | GET | - | 获取照片列表 |
+| 相册 | /api/albums/upload | POST | 🔒 Admin | 上传照片 |
+| 相册 | /api/albums/photos/{id} | DELETE | 🔒 Admin | 删除照片 |
+| 留言 | /api/comments | GET | - | 获取已审核留言列表 |
+| 留言 | /api/comments | POST | - | 提交留言 |
+| 留言 | /api/comments/all | GET | 🔒 Admin | 获取全部留言（含未审核） |
+| 留言 | /api/comments/{id}/reply | PUT | 🔒 Admin | 回复留言 |
+| 留言 | /api/comments/{id} | DELETE | 🔒 Admin | 删除留言 |
 
 ## 开发说明
 

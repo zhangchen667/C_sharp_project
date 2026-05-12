@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MyPersonalSpace.Data;
+using MyPersonalSpace.Middleware;
 using MyPersonalSpace.Models;
+using MyPersonalSpace.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -54,18 +56,28 @@ builder.Services.AddCors(options =>
     });
 });
 
+// 注册 HttpContextAccessor（用于操作日志获取IP）
+builder.Services.AddHttpContextAccessor();
+
+// 注册操作日志服务
+builder.Services.AddScoped<OperationLogService>();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// 在开发环境使用Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
     app.UseDeveloperExceptionPage();
 }
+
+// 全局异常处理中间件 - 必须在管道最前面
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseCors("AllowVue");
@@ -74,6 +86,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// 种子数据初始化
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;

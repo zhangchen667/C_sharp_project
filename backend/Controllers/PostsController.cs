@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using MyPersonalSpace.Data;
 using MyPersonalSpace.Models;
 using MyPersonalSpace.Models.Dtos;
+using MyPersonalSpace.Services;
 using System.Text.RegularExpressions;
 
 namespace MyPersonalSpace.Controllers;
@@ -15,11 +16,13 @@ public class PostsController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<User> _userManager;
+    private readonly OperationLogService _operationLogService;
 
-    public PostsController(ApplicationDbContext context, UserManager<User> userManager)
+    public PostsController(ApplicationDbContext context, UserManager<User> userManager, OperationLogService operationLogService)
     {
         _context = context;
         _userManager = userManager;
+        _operationLogService = operationLogService;
     }
 
     [HttpGet]
@@ -49,6 +52,7 @@ public class PostsController : ControllerBase
                 p.Title,
                 p.Content,
                 p.CreatedAt,
+                p.UpdatedAt,
                 p.CategoryId,
                 CategoryName = p.Category != null ? p.Category.Name : null,
                 AuthorName = p.Author != null ? p.Author.Nickname : null
@@ -75,6 +79,7 @@ public class PostsController : ControllerBase
             post.Title,
             post.Content,
             post.CreatedAt,
+            post.UpdatedAt,
             post.CategoryId,
             CategoryName = post.Category?.Name,
             AuthorName = post.Author?.Nickname
@@ -106,7 +111,79 @@ public class PostsController : ControllerBase
         _context.Posts.Add(post);
         await _context.SaveChangesAsync();
 
+        // 记录操作日志
+        if (!string.IsNullOrEmpty(userId))
+        {
+            await _operationLogService.LogAsync(userId, "CreatePost", $"创建文章：{post.Title}", post.Id.ToString());
+        }
+
         return Ok(new { success = true, message = "发布成功", postId = post.Id });
+    }
+
+    /// <summary>
+    /// 编辑文章 - 仅管理员可操作
+    /// </summary>
+    [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> UpdatePost(int id, [FromBody] PostUpdateDto dto)
+    {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        // 查找要编辑的文章
+        var post = await _context.Posts.FindAsync(id);
+        if (post == null)
+            return NotFound(new { success = false, message = "文章不存在" });
+
+        // 安全校验：过滤XSS脚本
+        if (Regex.IsMatch(dto.Content, @"<script[^>]*>|<\/script>", RegexOptions.IgnoreCase))
+            return BadRequest(new { success = false, message = "内容不允许包含JavaScript脚本" });
+
+        // 使用 Linq 更新文章属性
+        post.Title = dto.Title;
+        post.Content = dto.Content;
+        post.CategoryId = dto.CategoryId;
+        post.IsPublic = dto.IsPublic;
+        post.UpdatedAt = DateTime.Now; // 设置更新时间
+
+        _context.Posts.Update(post);
+        await _context.SaveChangesAsync();
+
+        // 记录操作日志
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (!string.IsNullOrEmpty(userId))
+        {
+            await _operationLogService.LogAsync(userId, "UpdatePost", $"编辑文章：{post.Title}", post.Id.ToString());
+        }
+
+        return Ok(new { success = true, message = "更新成功", postId = post.Id });
+    }
+
+    /// <summary>
+    /// 删除文章 - 仅管理员可操作
+    /// </summary>
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> DeletePost(int id)
+    {
+        // 使用 Linq 查询文章
+        var post = await _context.Posts.FindAsync(id);
+        if (post == null)
+            return NotFound(new { success = false, message = "文章不存在" });
+
+        var postTitle = post.Title; // 保存标题用于日志记录
+
+        _context.Posts.Remove(post);
+        await _context.SaveChangesAsync();
+
+        // 记录操作日志
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (!string.IsNullOrEmpty(userId))
+        {
+            await _operationLogService.LogAsync(userId, "DeletePost", $"删除文章：{postTitle}", id.ToString());
+        }
+
+        return Ok(new { success = true, message = "删除成功" });
     }
 
     [HttpGet("categories")]

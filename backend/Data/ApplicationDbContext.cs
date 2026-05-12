@@ -16,6 +16,7 @@ public class ApplicationDbContext : IdentityDbContext<User>
     public DbSet<Album> Albums { get; set; }
     public DbSet<Photo> Photos { get; set; }
     public DbSet<Comment> Comments { get; set; }
+    public DbSet<OperationLog> OperationLogs { get; set; }  // 新增
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -30,5 +31,23 @@ public class ApplicationDbContext : IdentityDbContext<User>
         builder.Entity<Album>().HasData(
             new Album { Id = 1, Name = "默认相册", Description = "默认上传相册" }
         );
+
+        // OperationLog 配置
+        builder.Entity<OperationLog>(entity =>
+        {
+            entity.ToTable("OperationLogs");
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.UserId).IsRequired().HasMaxLength(450);
+            entity.Property(e => e.Action).IsRequired().HasMaxLength(100);
+            entity.Property(e => e.Description).IsRequired().HasMaxLength(500);
+            entity.Property(e => e.TargetId).HasMaxLength(100);
+            entity.Property(e => e.IpAddress).HasMaxLength(50);
+            entity.Property(e => e.CreatedAt).IsRequired();
+
+            entity.HasOne(e => e.User)
+                  .WithMany()
+                  .HasForeignKey(e => e.UserId)
+                  .OnDelete(DeleteBehavior.Cascade);
+        });
     }
 }

@@ -20,7 +20,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowLeft } from '@element-plus/icons-vue'
@@ -40,6 +40,10 @@ const renderedContent = computed(() => {
 const fetchPost = async () => {
   const res = await postsApi.getDetail(route.params.id)
   post.value = res
+  await nextTick()
+  if (window.MathJax && window.MathJax.typesetPromise) {
+    window.MathJax.typesetPromise()
+  }
 }
 
 const formatDate = (date) => {
@@ -176,5 +180,17 @@ onMounted(fetchPost)
   border: 1px solid var(--border-light);
   padding: 8px 12px;
   text-align: left;
+}
+
+.markdown-body mjx-container {
+  overflow-x: auto;
+  max-width: 100%;
+  display: inline-block !important;
+}
+
+.markdown-body mjx-container[display="true"] {
+  display: block !important;
+  margin: 1em 0;
+  text-align: center;
 }
 </style>

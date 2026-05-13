@@ -22,7 +22,7 @@
             <span class="author">{{ post.authorName || '匿名' }}</span>
             <span class="date">{{ formatDate(post.createdAt) }}</span>
           </div>
-          <div class="post-excerpt">{{ post.content.substring(0, 100) }}...</div>
+          <div class="post-excerpt markdown-body" v-html="getExcerpt(post.content)"></div>
           <el-button type="primary" link @click="$router.push(`/posts/${post.id}`)">阅读全文 →</el-button>
           <el-button v-if="userStore.isLoggedIn && post.authorId === userStore.user?.id" type="danger" link @click.stop="deletePost(post.id, post.title)">删除</el-button>
         </el-card>
@@ -52,10 +52,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { postsApi } from '../api'
 import { useUserStore } from '../stores/user'
+import { marked } from 'marked'
 
 const userStore = useUserStore()
 const keyword = ref('')
@@ -73,6 +74,10 @@ const fetchCategories = async () => {
 const fetchPosts = async () => {
   const res = await postsApi.getList({ keyword: keyword.value, categoryId: categoryId.value })
   posts.value = res
+  await nextTick()
+  if (window.MathJax && window.MathJax.typesetPromise) {
+    window.MathJax.typesetPromise()
+  }
 }
 
 const createPost = async () => {
@@ -94,6 +99,11 @@ const createPost = async () => {
 
 const formatDate = (date) => {
   return new Date(date).toLocaleDateString()
+}
+
+const getExcerpt = (content) => {
+  const text = (content || '').substring(0, 100)
+  return marked(text) + '...'
 }
 
 const deletePost = async (id, title) => {

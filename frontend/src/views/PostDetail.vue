@@ -14,23 +14,28 @@
         <span class="author">{{ post.authorName || '匿名' }}</span>
         <span class="date">{{ formatDate(post.createdAt) }}</span>
       </div>
-      <div class="post-content">{{ post.content }}</div>
+      <div class="post-content markdown-body" v-html="renderedContent"></div>
     </el-card>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowLeft } from '@element-plus/icons-vue'
 import { postsApi } from '../api'
+import { marked } from 'marked'
 import { useUserStore } from '../stores/user'
 
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 const post = ref({ title: '', content: '' })
+
+const renderedContent = computed(() => {
+  return marked(post.value.content || '')
+})
 
 const fetchPost = async () => {
   const res = await postsApi.getDetail(route.params.id)

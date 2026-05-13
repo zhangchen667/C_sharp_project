@@ -54,6 +54,7 @@ public class PostsController : ControllerBase
                 p.CreatedAt,
                 p.UpdatedAt,
                 p.CategoryId,
+                p.AuthorId,
                 CategoryName = p.Category != null ? p.Category.Name : null,
                 AuthorName = p.Author != null ? p.Author.Nickname : null
             })
@@ -81,6 +82,7 @@ public class PostsController : ControllerBase
             post.CreatedAt,
             post.UpdatedAt,
             post.CategoryId,
+            post.AuthorId,
             CategoryName = post.Category?.Name,
             AuthorName = post.Author?.Nickname
         });
@@ -179,13 +181,16 @@ public class PostsController : ControllerBase
         if (post == null)
             return NotFound(new { success = false, message = "文章不存在" });
 
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (post.AuthorId != userId)
+            return Forbid("只能删除自己发布的文章");
+
         var postTitle = post.Title; // 保存标题用于日志记录
 
         _context.Posts.Remove(post);
         await _context.SaveChangesAsync();
 
         // 记录操作日志
-        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
         if (!string.IsNullOrEmpty(userId))
         {
             try

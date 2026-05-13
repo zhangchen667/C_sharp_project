@@ -7,7 +7,7 @@
     <el-card class="detail-card">
       <div class="detail-header">
         <h1 class="post-title">{{ post.title }}</h1>
-        <el-button v-if="userStore.isLoggedIn" type="danger" size="small" @click="deletePost">删除文章</el-button>
+        <el-button v-if="userStore.isLoggedIn && post.authorId === userStore.user?.id" type="danger" size="small" @click="deletePost">删除文章</el-button>
       </div>
       <div class="post-meta">
         <el-tag size="small">{{ post.categoryName }}</el-tag>

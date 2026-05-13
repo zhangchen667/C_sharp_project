@@ -24,7 +24,7 @@
           </div>
           <div class="post-excerpt">{{ post.content.substring(0, 100) }}...</div>
           <el-button type="primary" link @click="$router.push(`/posts/${post.id}`)">阅读全文 →</el-button>
-          <el-button v-if="userStore.isLoggedIn" type="danger" link @click.stop="deletePost(post.id, post.title)">删除</el-button>
+          <el-button v-if="userStore.isLoggedIn && post.authorId === userStore.user?.id" type="danger" link @click.stop="deletePost(post.id, post.title)">删除</el-button>
         </el-card>
       </el-col>
     </el-row>

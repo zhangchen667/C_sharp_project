@@ -38,7 +38,7 @@ public class AlbumsController : ControllerBase
     }
 
     [HttpPost("upload")]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public async Task<IActionResult> UploadPhoto(IFormFile file, string? description = null)
     {
         if (file == null || file.Length == 0)
@@ -81,7 +81,7 @@ public class AlbumsController : ControllerBase
     }
 
     [HttpDelete("photos/{id}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public async Task<IActionResult> DeletePhoto(int id)
     {
         var photo = await _context.Photos.FindAsync(id);

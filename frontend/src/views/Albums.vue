@@ -2,7 +2,7 @@
   <div class="albums">
     <div class="header-bar">
       <h1 class="page-title">相册</h1>
-      <el-button type="primary" @click="showUpload = true" v-if="userStore.isAdmin">上传照片</el-button>
+      <el-button type="primary" @click="showUpload = true" v-if="userStore.isLoggedIn">上传照片</el-button>
     </div>
 
     <el-empty v-if="!photos.length" description="暂无照片" />
@@ -23,7 +23,7 @@
             <p class="photo-desc">{{ photo.description || photo.fileName }}</p>
             <div class="photo-actions">
               <span class="date">{{ formatDate(photo.uploadedAt) }}</span>
-              <el-button type="danger" link size="small" v-if="userStore.isAdmin" @click="deletePhoto(photo.id)">删除</el-button>
+              <el-button type="danger" link size="small" v-if="userStore.isLoggedIn" @click="deletePhoto(photo.id)">删除</el-button>
             </div>
           </div>
         </el-card>

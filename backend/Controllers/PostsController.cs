@@ -87,7 +87,7 @@ public class PostsController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public async Task<IActionResult> CreatePost([FromBody] PostCreateDto dto)
     {
         if (!ModelState.IsValid)
@@ -114,7 +114,11 @@ public class PostsController : ControllerBase
         // 记录操作日志
         if (!string.IsNullOrEmpty(userId))
         {
-            await _operationLogService.LogAsync(userId, "CreatePost", $"创建文章：{post.Title}", post.Id.ToString());
+            try
+            {
+                await _operationLogService.LogAsync(userId, "CreatePost", $"创建文章：{post.Title}", post.Id.ToString());
+            }
+            catch { /* 日志写入失败不影响主操作 */ }
         }
 
         return Ok(new { success = true, message = "发布成功", postId = post.Id });
@@ -124,7 +128,7 @@ public class PostsController : ControllerBase
     /// 编辑文章 - 仅管理员可操作
     /// </summary>
     [HttpPut("{id}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public async Task<IActionResult> UpdatePost(int id, [FromBody] PostUpdateDto dto)
     {
         if (!ModelState.IsValid)
@@ -153,7 +157,11 @@ public class PostsController : ControllerBase
         var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
         if (!string.IsNullOrEmpty(userId))
         {
-            await _operationLogService.LogAsync(userId, "UpdatePost", $"编辑文章：{post.Title}", post.Id.ToString());
+            try
+            {
+                await _operationLogService.LogAsync(userId, "UpdatePost", $"编辑文章：{post.Title}", post.Id.ToString());
+            }
+            catch { }
         }
 
         return Ok(new { success = true, message = "更新成功", postId = post.Id });
@@ -163,7 +171,7 @@ public class PostsController : ControllerBase
     /// 删除文章 - 仅管理员可操作
     /// </summary>
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin")]
+    [Authorize]
     public async Task<IActionResult> DeletePost(int id)
     {
         // 使用 Linq 查询文章
@@ -180,7 +188,11 @@ public class PostsController : ControllerBase
         var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
         if (!string.IsNullOrEmpty(userId))
         {
-            await _operationLogService.LogAsync(userId, "DeletePost", $"删除文章：{postTitle}", id.ToString());
+            try
+            {
+                await _operationLogService.LogAsync(userId, "DeletePost", $"删除文章：{postTitle}", id.ToString());
+            }
+            catch { }
         }
 
         return Ok(new { success = true, message = "删除成功" });

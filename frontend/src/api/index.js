@@ -33,7 +33,8 @@ export const postsApi = {
   getList: (params) => request.get('/posts', { params }),
   getDetail: (id) => request.get(`/posts/${id}`),
   getCategories: () => request.get('/posts/categories'),
-  create: (data) => request.post('/posts', data)
+  create: (data) => request.post('/posts', data),
+  delete: (id) => request.delete(`/posts/${id}`)
 }
 
 export const albumsApi = {

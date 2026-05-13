@@ -9,7 +9,7 @@
           <el-option v-for="cat in categories" :key="cat.id" :label="cat.name" :value="cat.id" />
         </el-select>
         <el-button type="primary" @click="fetchPosts">搜索</el-button>
-        <el-button type="primary" @click="showCreate = true" v-if="userStore.isAdmin">发布文章</el-button>
+        <el-button type="primary" @click="showCreate = true" v-if="userStore.isLoggedIn">发布文章</el-button>
       </div>
     </el-card>
 
@@ -24,6 +24,7 @@
           </div>
           <div class="post-excerpt">{{ post.content.substring(0, 100) }}...</div>
           <el-button type="primary" link @click="$router.push(`/posts/${post.id}`)">阅读全文 →</el-button>
+          <el-button v-if="userStore.isLoggedIn" type="danger" link @click.stop="deletePost(post.id, post.title)">删除</el-button>
         </el-card>
       </el-col>
     </el-row>
@@ -52,7 +53,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { postsApi } from '../api'
 import { useUserStore } from '../stores/user'
 
@@ -93,6 +94,19 @@ const createPost = async () => {
 
 const formatDate = (date) => {
   return new Date(date).toLocaleDateString()
+}
+
+const deletePost = async (id, title) => {
+  try {
+    await ElMessageBox.confirm(`确定删除文章「${title}」吗？`, '提示', { type: 'warning' })
+    const res = await postsApi.delete(id)
+    if (res.success) {
+      ElMessage.success('删除成功')
+      fetchPosts()
+    }
+  } catch {
+    // 用户取消
+  }
 }
 
 onMounted(() => {

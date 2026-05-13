@@ -20,7 +20,7 @@
           <el-input v-model="form.password" type="password" placeholder="请输入密码" show-password />
           <div class="password-hint">
             <el-icon><InfoFilled /></el-icon>
-            密码要求：至少6位，建议包含大小写字母、数字和特殊字符
+            密码要求：至少6位，必须包含大写字母、小写字母、数字和特殊字符
           </div>
         </el-form-item>
         <el-form-item label="确认密码" prop="confirmPassword"

@@ -5,7 +5,10 @@
       返回列表
     </el-button>
     <el-card class="detail-card">
-      <h1 class="post-title">{{ post.title }}</h1>
+      <div class="detail-header">
+        <h1 class="post-title">{{ post.title }}</h1>
+        <el-button v-if="userStore.isLoggedIn" type="danger" size="small" @click="deletePost">删除文章</el-button>
+      </div>
       <div class="post-meta">
         <el-tag size="small">{{ post.categoryName }}</el-tag>
         <span class="author">{{ post.authorName || '匿名' }}</span>
@@ -18,11 +21,15 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { ArrowLeft } from '@element-plus/icons-vue'
 import { postsApi } from '../api'
+import { useUserStore } from '../stores/user'
 
 const route = useRoute()
+const router = useRouter()
+const userStore = useUserStore()
 const post = ref({ title: '', content: '' })
 
 const fetchPost = async () => {
@@ -32,6 +39,19 @@ const fetchPost = async () => {
 
 const formatDate = (date) => {
   return new Date(date).toLocaleString()
+}
+
+const deletePost = async () => {
+  try {
+    await ElMessageBox.confirm(`确定删除文章「${post.value.title}」吗？`, '提示', { type: 'warning' })
+    const res = await postsApi.delete(route.params.id)
+    if (res.success) {
+      ElMessage.success('删除成功')
+      router.push('/posts')
+    }
+  } catch {
+    // 用户取消
+  }
 }
 
 onMounted(fetchPost)
@@ -49,6 +69,12 @@ onMounted(fetchPost)
 
 .detail-card {
   margin-top: var(--spacing-lg);
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .post-title {

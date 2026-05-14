@@ -23,8 +23,14 @@
             <span class="date">{{ formatDate(post.createdAt) }}</span>
           </div>
           <div class="post-excerpt markdown-body" v-html="getExcerpt(post.content)"></div>
-          <el-button type="primary" link @click="$router.push(`/posts/${post.id}`)">阅读全文 →</el-button>
-          <el-button v-if="userStore.isLoggedIn && post.authorId === userStore.user?.id" type="danger" link @click.stop="deletePost(post.id, post.title)">删除</el-button>
+          <div class="post-actions">
+            <el-button class="link-btn" @click="$router.push(`/posts/${post.id}`)">阅读全文 →</el-button>
+            <el-button
+              v-if="userStore.isLoggedIn && post.authorId === userStore.user?.id"
+              class="delete-btn"
+              @click.stop="deletePost(post.id, post.title)"
+            >删除</el-button>
+          </div>
         </el-card>
       </el-col>
     </el-row>
@@ -198,6 +204,40 @@ onMounted(() => {
   font-size: var(--font-size-sm);
   margin-bottom: var(--spacing-md);
   flex: 1;
+}
+
+.post-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+}
+
+.link-btn {
+  color: var(--brand-primary);
+  padding: 0;
+  font-size: var(--font-size-sm);
+  transition: color var(--transition-fast);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.link-btn:hover {
+  color: var(--brand-primary-deep);
+}
+
+.delete-btn {
+  color: var(--text-muted);
+  padding: 0;
+  font-size: var(--font-size-sm);
+  transition: color var(--transition-fast);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  color: #D45D5D;
 }
 
 @media (max-width: 768px) {

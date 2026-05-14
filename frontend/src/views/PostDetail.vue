@@ -7,7 +7,12 @@
     <el-card class="detail-card">
       <div class="detail-header">
         <h1 class="post-title">{{ post.title }}</h1>
-        <el-button v-if="userStore.isLoggedIn && post.authorId === userStore.user?.id" type="danger" size="small" @click="deletePost">删除文章</el-button>
+        <el-button
+          v-if="userStore.isLoggedIn && post.authorId === userStore.user?.id"
+          class="delete-btn"
+          size="small"
+          @click="deletePost"
+        >删除文章</el-button>
       </div>
       <div class="post-meta">
         <el-tag size="small">{{ post.categoryName }}</el-tag>
@@ -74,10 +79,31 @@ onMounted(fetchPost)
 
 .back-btn {
   margin-bottom: var(--spacing-lg);
+  color: var(--text-secondary);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.back-btn:hover {
+  color: var(--brand-primary);
+  background-color: var(--bg-secondary);
 }
 
 .detail-card {
   margin-top: var(--spacing-lg);
+}
+
+.delete-btn {
+  color: var(--text-muted);
+  border-color: var(--border-light);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.delete-btn:hover {
+  color: #D45D5D;
+  border-color: #D45D5D;
+  background-color: rgba(212, 93, 93, 0.1);
 }
 
 .detail-header {

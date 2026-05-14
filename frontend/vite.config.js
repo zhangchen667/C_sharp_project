@@ -6,7 +6,14 @@ export default defineConfig({
   server: {
     port: 5173
   },
+  resolve: {
+    alias: [
+      // 只精确匹配 dayjs，不影响 dayjs/plugin/*
+      { find: /^dayjs$/, replacement: 'dayjs/esm/index.js' }
+    ]
+  },
   optimizeDeps: {
-    noDiscovery: true
+    noDiscovery: false,
+    include: ['element-plus', 'dayjs']
   }
 })

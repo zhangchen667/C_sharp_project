@@ -500,6 +500,19 @@ onMounted(() => {
   margin-top: var(--spacing-sm);
 }
 
+@media (max-width: 768px) {
+  .post-images {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .comment-input {
+    max-width: 100%;
+  }
+}
+</style>
+
+<style>
+/* markdown-body 样式不能放在 scoped 中，因为 v-html 内容不带 scoped 属性 */
 .markdown-body h1, .markdown-body h2, .markdown-body h3,
 .markdown-body h4, .markdown-body h5, .markdown-body h6 {
   margin-top: 1.5em;
@@ -559,9 +572,18 @@ onMounted(() => {
 }
 
 .markdown-body th, .markdown-body td {
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--border-medium);
   padding: 8px 12px;
   text-align: left;
+}
+
+.markdown-body th {
+  background: var(--bg-secondary);
+  font-weight: 600;
+}
+
+.markdown-body tr:nth-child(even) {
+  background: var(--bg-secondary);
 }
 
 .markdown-body mjx-container {
@@ -574,15 +596,5 @@ onMounted(() => {
   display: block !important;
   margin: 1em 0;
   text-align: center;
-}
-
-@media (max-width: 768px) {
-  .post-images {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .comment-input {
-    max-width: 100%;
-  }
 }
 </style>

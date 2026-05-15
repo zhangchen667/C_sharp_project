@@ -11,6 +11,9 @@ public class Post
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime? UpdatedAt { get; set; }
 
+    // 导航属性
     public virtual Category? Category { get; set; }
     public virtual User? Author { get; set; }
+    public virtual ICollection<PostImage> Images { get; set; } = new List<PostImage>();
+    public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 }

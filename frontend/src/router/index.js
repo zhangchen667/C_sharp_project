@@ -17,14 +17,15 @@ const routes = [
     component: () => import('../views/PostDetail.vue')
   },
   {
-    path: '/albums',
-    name: 'Albums',
-    component: () => import('../views/Albums.vue')
+    path: '/profile',
+    name: 'Profile',
+    component: () => import('../views/Profile.vue'),
+    meta: { requiresAuth: true }
   },
   {
-    path: '/comments',
-    name: 'Comments',
-    component: () => import('../views/Comments.vue')
+    path: '/profile/:userId',
+    name: 'UserProfile',
+    component: () => import('../views/Profile.vue')
   },
   {
     path: '/login',

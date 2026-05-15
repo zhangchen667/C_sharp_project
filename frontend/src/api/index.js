@@ -34,23 +34,26 @@ export const postsApi = {
   getDetail: (id) => request.get(`/posts/${id}`),
   getCategories: () => request.get('/posts/categories'),
   create: (data) => request.post('/posts', data),
-  delete: (id) => request.delete(`/posts/${id}`)
-}
-
-export const albumsApi = {
-  getPhotos: () => request.get('/albums/photos'),
-  upload: (formData) => request.post('/albums/upload', formData, {
+  update: (id, data) => request.put(`/posts/${id}`, data),
+  delete: (id) => request.delete(`/posts/${id}`),
+  uploadImage: (formData) => request.post('/posts/upload-image', formData, {
     headers: { 'Content-Type': 'multipart/form-data' }
   }),
-  delete: (id) => request.delete(`/albums/photos/${id}`)
-}
-
-export const commentsApi = {
-  getList: () => request.get('/comments'),
-  getAll: () => request.get('/comments/all'),
-  create: (data) => request.post('/comments', data),
-  reply: (id, reply) => request.put(`/comments/${id}/reply`, reply, {
+  getComments: (postId) => request.get(`/posts/${postId}/comments`),
+  createComment: (data) => request.post('/posts/comments', data),
+  replyComment: (id, reply) => request.put(`/posts/comments/${id}/reply`, reply, {
     headers: { 'Content-Type': 'application/json' }
   }),
-  delete: (id) => request.delete(`/comments/${id}`)
+  deleteComment: (id) => request.delete(`/posts/comments/${id}`)
+}
+
+export const profileApi = {
+  getProfile: (userId) => request.get(`/profile/${userId || ''}`),
+  updateProfile: (data) => request.put('/profile', data),
+  getPosts: (userId, params) => request.get(`/profile/${userId}/posts`, { params }),
+  getPhotos: (userId) => request.get(`/profile/${userId}/photos`),
+  uploadPhoto: (formData) => request.post('/profile/photos', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
+  deletePhoto: (id) => request.delete(`/profile/photos/${id}`)
 }

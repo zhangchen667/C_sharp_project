@@ -172,18 +172,15 @@ namespace MyPersonalSpace.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Albums");
+                    b.HasIndex("UserId");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedAt = new DateTime(2026, 5, 12, 15, 3, 22, 642, DateTimeKind.Local).AddTicks(4514),
-                            Description = "默认上传相册",
-                            Name = "默认相册"
-                        });
+                    b.ToTable("Albums");
                 });
 
             modelBuilder.Entity("MyPersonalSpace.Models.Category", b =>
@@ -212,21 +209,21 @@ namespace MyPersonalSpace.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2026, 5, 12, 15, 3, 22, 638, DateTimeKind.Local).AddTicks(3968),
+                            CreatedAt = new DateTime(2026, 5, 15, 15, 35, 24, 68, DateTimeKind.Local).AddTicks(4875),
                             Description = "技术相关文章",
                             Name = "技术"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2026, 5, 12, 15, 3, 22, 642, DateTimeKind.Local).AddTicks(696),
+                            CreatedAt = new DateTime(2026, 5, 15, 15, 35, 24, 71, DateTimeKind.Local).AddTicks(6343),
                             Description = "日常随笔",
                             Name = "生活"
                         },
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2026, 5, 12, 15, 3, 22, 642, DateTimeKind.Local).AddTicks(706),
+                            CreatedAt = new DateTime(2026, 5, 15, 15, 35, 24, 71, DateTimeKind.Local).AddTicks(6368),
                             Description = "学习笔记",
                             Name = "学习"
                         });
@@ -240,10 +237,6 @@ namespace MyPersonalSpace.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("AuthorName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -251,16 +244,29 @@ namespace MyPersonalSpace.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Email")
+                    b.Property<string>("GuestEmail")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("GuestName")
                         .HasColumnType("longtext");
 
                     b.Property<bool>("IsApproved")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Reply")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Comments");
                 });
@@ -334,9 +340,15 @@ namespace MyPersonalSpace.Migrations
                     b.Property<DateTime>("UploadedAt")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AlbumId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Photos");
                 });
@@ -381,6 +393,41 @@ namespace MyPersonalSpace.Migrations
                     b.ToTable("Posts");
                 });
 
+            modelBuilder.Entity("MyPersonalSpace.Models.PostImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<long>("FileSize")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("PostImages");
+                });
+
             modelBuilder.Entity("MyPersonalSpace.Models.User", b =>
                 {
                     b.Property<string>("Id")
@@ -388,6 +435,12 @@ namespace MyPersonalSpace.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<string>("Avatar")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Bio")
+                        .HasColumnType("longtext");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -505,6 +558,35 @@ namespace MyPersonalSpace.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MyPersonalSpace.Models.Album", b =>
+                {
+                    b.HasOne("MyPersonalSpace.Models.User", "User")
+                        .WithMany("Albums")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MyPersonalSpace.Models.Comment", b =>
+                {
+                    b.HasOne("MyPersonalSpace.Models.Post", "Post")
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MyPersonalSpace.Models.User", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("MyPersonalSpace.Models.OperationLog", b =>
                 {
                     b.HasOne("MyPersonalSpace.Models.User", "User")
@@ -524,7 +606,15 @@ namespace MyPersonalSpace.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MyPersonalSpace.Models.User", "User")
+                        .WithMany("Photos")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Album");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MyPersonalSpace.Models.Post", b =>
@@ -544,6 +634,17 @@ namespace MyPersonalSpace.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("MyPersonalSpace.Models.PostImage", b =>
+                {
+                    b.HasOne("MyPersonalSpace.Models.Post", "Post")
+                        .WithMany("Images")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+                });
+
             modelBuilder.Entity("MyPersonalSpace.Models.Album", b =>
                 {
                     b.Navigation("Photos");
@@ -554,8 +655,21 @@ namespace MyPersonalSpace.Migrations
                     b.Navigation("Posts");
                 });
 
+            modelBuilder.Entity("MyPersonalSpace.Models.Post", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Images");
+                });
+
             modelBuilder.Entity("MyPersonalSpace.Models.User", b =>
                 {
+                    b.Navigation("Albums");
+
+                    b.Navigation("Comments");
+
+                    b.Navigation("Photos");
+
                     b.Navigation("Posts");
                 });
 #pragma warning restore 612, 618

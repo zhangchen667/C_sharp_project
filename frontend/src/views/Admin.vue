@@ -12,12 +12,11 @@
 
     <el-card class="comments-card">
       <template #header>
-        <span class="card-header-title">留言管理</span>
+        <span class="card-header-title">评论管理</span>
       </template>
       <el-table :data="comments" style="width: 100%">
         <el-table-column prop="authorName" label="昵称" width="120" />
-        <el-table-column prop="email" label="邮箱" width="180" />
-        <el-table-column prop="content" label="留言内容" />
+        <el-table-column prop="content" label="评论内容" />
         <el-table-column label="操作" width="200">
           <template #default="{ row }">
             <el-button size="small" @click="showReply(row)">回复</el-button>
@@ -27,7 +26,7 @@
       </el-table>
     </el-card>
 
-    <el-dialog v-model="showReplyDialog" title="回复留言" width="500px">
+    <el-dialog v-model="showReplyDialog" title="回复评论" width="500px">
       <el-input v-model="replyContent" type="textarea" :rows="4" placeholder="请输入回复内容" />
       <template #footer>
         <el-button @click="showReplyDialog = false">取消</el-button>
@@ -40,13 +39,15 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { commentsApi, postsApi, albumsApi } from '../api'
+import { postsApi, profileApi } from '../api'
+import { useUserStore } from '../stores/user'
 
+const userStore = useUserStore()
 const comments = ref([])
 const stats = ref([
   { title: '文章数量', value: 0 },
   { title: '照片数量', value: 0 },
-  { title: '留言总数', value: 0 },
+  { title: '评论总数', value: 0 },
   { title: '待回复', value: 0 }
 ])
 const showReplyDialog = ref(false)
@@ -54,17 +55,34 @@ const replyContent = ref('')
 let currentCommentId = null
 
 const fetchData = async () => {
-  const [commentsRes, postsRes, photosRes] = await Promise.all([
-    commentsApi.getAll(),
-    postsApi.getList(),
-    albumsApi.getPhotos()
-  ])
+  try {
+    const [postsRes, photosRes] = await Promise.all([
+      postsApi.getList(),
+      profileApi.getPhotos(userStore.user?.id)
+    ])
 
-  comments.value = commentsRes
-  stats.value[0].value = postsRes.length
-  stats.value[1].value = photosRes.length
-  stats.value[2].value = commentsRes.length
-  stats.value[3].value = commentsRes.filter(c => !c.reply).length
+    stats.value[0].value = postsRes.totalCount || postsRes.posts?.length || 0
+    stats.value[1].value = photosRes.length || 0
+
+    const allComments = []
+    const posts = postsRes.posts || postsRes || []
+
+    for (const post of posts) {
+      try {
+        const postComments = await postsApi.getComments(post.id)
+        allComments.push(...(postComments || []))
+      } catch (e) {
+        console.error(`获取文章 ${post.id} 评论失败`, e)
+      }
+    }
+
+    comments.value = allComments
+    stats.value[2].value = allComments.length
+    stats.value[3].value = allComments.filter(c => !c.reply).length
+  } catch (e) {
+    console.error('加载数据失败', e)
+    ElMessage.error('加载数据失败')
+  }
 }
 
 const showReply = (row) => {
@@ -79,7 +97,7 @@ const submitReply = async () => {
     return
   }
   try {
-    await commentsApi.reply(currentCommentId, replyContent.value)
+    await postsApi.replyComment(currentCommentId, { reply: replyContent.value })
     ElMessage.success('回复成功')
     showReplyDialog.value = false
     fetchData()
@@ -90,7 +108,7 @@ const submitReply = async () => {
 
 const deleteComment = async (id) => {
   try {
-    await commentsApi.delete(id)
+    await postsApi.deleteComment(id)
     ElMessage.success('删除成功')
     fetchData()
   } catch (e) {

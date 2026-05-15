@@ -14,4 +14,7 @@ public class PostCreateDto
     public int CategoryId { get; set; }
 
     public bool IsPublic { get; set; } = true;
+
+    // 图片路径列表（上传后返回的路径）
+    public List<string>? ImagePaths { get; set; }
 }
